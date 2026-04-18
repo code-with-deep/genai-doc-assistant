@@ -27,12 +27,15 @@ def add_chunks(chunks: list[dict]) -> None:
     )
 
 
-def search(query: str, doc_id: str | None = None, top_k: int = TOP_K) -> list[dict]:
+def search(query: str, session_id: str, doc_id: str | None = None, top_k: int = TOP_K) -> list[dict]:
     """
     Semantic search — finds top-k most relevant chunks for the query.
     Optionally filter by doc_id to search within a specific document.
+    Must filter by session_id to isolate users.
     """
-    where_filter = {"doc_id": doc_id} if doc_id else None
+    where_filter = {"session_id": session_id}
+    if doc_id:
+        where_filter = {"$and": [{"doc_id": doc_id}, {"session_id": session_id}]}
 
     results = _collection.query(
         query_texts=[query],   # auto-embedded internally — no manual embedding needed
@@ -51,26 +54,35 @@ def search(query: str, doc_id: str | None = None, top_k: int = TOP_K) -> list[di
     ]
 
 
-def delete_document(doc_id: str) -> int:
+def delete_document(doc_id: str, session_id: str) -> int:
     """
-    Delete all chunks belonging to a document.
+    Delete all chunks belonging to a document, ensuring it matches session_id.
     Returns number of chunks deleted.
     """
-    existing = _collection.get(where={"doc_id": doc_id})
+    existing = _collection.get(where={"doc_id": doc_id}, include=["metadatas"])
     count = len(existing["ids"])
     if count > 0:
-        _collection.delete(ids=existing["ids"])
-    return count
+        ids_to_delete = []
+        for i, meta in enumerate(existing["metadatas"]):
+            if meta.get("session_id") == session_id:
+                ids_to_delete.append(existing["ids"][i])
+        
+        if ids_to_delete:
+            _collection.delete(ids=ids_to_delete)
+        return len(ids_to_delete)
+    return 0
 
 
-def list_documents() -> list[dict]:
+def list_documents(session_id: str) -> list[dict]:
     """
-    Return deduplicated list of { doc_id, filename } for all stored documents.
+    Return deduplicated list of { doc_id, filename } for all stored documents of a user.
     """
-    results = _collection.get(include=["metadatas"])
+    results = _collection.get(where={"session_id": session_id}, include=["metadatas"])
     seen = {}
     for meta in results["metadatas"]:
-        doc_id = meta["doc_id"]
-        if doc_id not in seen:
-            seen[doc_id] = meta["filename"]
+        # Safety check just in case where clause fails
+        if meta.get("session_id") == session_id:
+            d_id = meta["doc_id"]
+            if d_id not in seen:
+                seen[d_id] = meta["filename"]
     return [{"doc_id": k, "filename": v} for k, v in seen.items()]

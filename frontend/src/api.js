@@ -3,9 +3,19 @@ import axios from 'axios'
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
+// Generate or retrieve a persistent session ID for the user
+let sessionId = localStorage.getItem('chat_session_id')
+if (!sessionId) {
+  sessionId = 'session_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  localStorage.setItem('chat_session_id', sessionId)
+}
+
 const client = axios.create({
   baseURL: BASE_URL,
   timeout: 60000, 
+  headers: {
+    'X-Session-ID': sessionId
+  }
 })
 
 

@@ -20,7 +20,7 @@ def extract_text_from_pdf(file_bytes: bytes) -> list[dict]:
     return pages
 
 
-def chunk_text(pages: list[dict], doc_id: str, filename: str) -> list[dict]:
+def chunk_text(pages: list[dict], doc_id: str, filename: str, session_id: str) -> list[dict]:
     """
     Split page text into overlapping word-based chunks.
     Each chunk carries metadata: doc_id, filename, page, chunk_index.
@@ -44,7 +44,8 @@ def chunk_text(pages: list[dict], doc_id: str, filename: str) -> list[dict]:
                     "doc_id": doc_id,
                     "filename": filename,
                     "page": page["page"],
-                    "chunk_index": chunk_index
+                    "chunk_index": chunk_index,
+                    "session_id": session_id
                 }
             })
 
