@@ -13,8 +13,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://genai-doc-assistant.vercel.app",  
-        "*"  
+        "https://genai-doc-assistant.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
