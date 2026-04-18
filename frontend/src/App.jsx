@@ -3,14 +3,7 @@ import FileUpload from "./components/FileUpload";
 import ChatWindow from "./components/ChatWindow";
 
 export default function App() {
-  const [activeDoc, setActiveDoc] = useState(() => {
-    try {
-      const saved = localStorage.getItem("activeDoc");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [activeDoc, setActiveDoc] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -22,7 +15,6 @@ export default function App() {
 
   const handleSetDoc = (doc) => {
     setActiveDoc(doc);
-    localStorage.setItem("activeDoc", JSON.stringify(doc));
     if (isMobile) setSidebarOpen(false);
   };
 

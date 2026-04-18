@@ -138,14 +138,10 @@ export default function ChatWindow({ activeDoc, onMenuOpen }) {
 
         <div style={styles.navRight}>
           {/* Shows whichever doc is currently active */}
-          {activeDoc ? (
+          {activeDoc && (
             <div style={styles.activeDocBadge}>
               <div style={styles.activeDot} />
               <span style={styles.activeDocName}>{activeDoc.filename}</span>
-            </div>
-          ) : (
-            <div style={styles.noDocBadge}>
-              No document selected
             </div>
           )}
           <button style={styles.clearBtn} onClick={clearChat} title="Clear chat">
@@ -344,15 +340,7 @@ const styles = {
     flexShrink: 0,
     animation: "pulse-glow 2s ease-in-out infinite",
   },
-  noDocBadge: {
-    padding: "5px 12px",
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid var(--border)",
-    borderRadius: "99px",
-    fontSize: "11px",
-    color: "var(--text-muted)",
-    fontFamily: "var(--font-mono)",
-  },
+
   clearBtn: {
     background: "rgba(255,255,255,0.04)",
     border: "1px solid var(--border)",

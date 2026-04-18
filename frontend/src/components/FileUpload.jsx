@@ -301,37 +301,32 @@ const styles = {
     flex: 1,
   },
   deleteBtn: {
-    display: "none", // Hidden by default, shown on hover
+    display: "flex", // Make it visible by default
+    alignItems: "center",
+    justifyContent: "center",
     border: "none",
-    background: "none",
-    color: "var(--text-muted)",
+    background: "rgba(255,100,100,0.1)", // Slight red tint
+    color: "var(--accent-red)",
     cursor: "pointer",
-    padding: "4px",
-    borderRadius: "4px",
+    padding: "6px",
+    borderRadius: "6px",
     transition: "var(--transition)",
-    "&:hover": {
-      color: "var(--accent-red)",
-      background: "rgba(255,100,100,0.1)",
-    },
   },
   docItem: {
     padding: "10px 12px",
     borderRadius: "var(--radius-sm)",
     cursor: "pointer",
     transition: "var(--transition)",
-    "&:hover": {
-      background: "rgba(100,220,255,0.06)",
-    },
-    "&:hover .delete-btn": {
-      display: "block",
-    },
   },
   docItemActive: {
     background: "rgba(100,220,255,0.1)",
     boxShadow: "0 0 0 1px rgba(100,220,255,0.2), 0 1px 3px rgba(0,0,0,0.1)",
   },
   docItemRow: {
+    display: "flex",
+    alignItems: "center",
     justifyContent: "space-between",
+    width: "100%",
   },
 };
 
